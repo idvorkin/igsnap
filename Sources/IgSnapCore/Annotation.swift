@@ -61,7 +61,10 @@ public func draw(_ annotation: Annotation, in ctx: CGContext) {
     switch annotation.shape {
     case .blackout(let rect):
         ctx.setFillColor(RGBA.black.cgColor)
-        ctx.fill(rect)
+        // Rounded, but never more than a small box can take.
+        let radius = min(6, rect.width / 2, rect.height / 2)
+        ctx.addPath(CGPath(roundedRect: rect, cornerWidth: radius, cornerHeight: radius, transform: nil))
+        ctx.fillPath()
     case .rectangle(let rect):
         ctx.stroke(rect)
     case .ellipse(let rect):

@@ -128,5 +128,7 @@ private func isRed(_ p: [UInt8]) -> Bool { p[0] > 200 && p[1] < 100 && p[2] < 10
     let box = Annotation(.blackout(CGRect(x: 60, y: 60, width: 20, height: 20)), color: .red)
     let out = try #require(render(image: fixture(), selection: selection, scale: 2, annotations: [box]))
     #expect(pixel(out, 40, 40) == [0, 0, 0])  // the middle is filled
+    #expect(pixel(out, 40, 21) == [0, 0, 0])  // so is the middle of the top edge
+    #expect(pixel(out, 20, 20) == [255, 255, 255])  // the corner itself is rounded off
     #expect(pixel(out, 80, 80) == [255, 255, 255])  // outside is untouched
 }
