@@ -1,5 +1,34 @@
-# SnipSnap
+# IgSnap
 
-A small native Mac screenshot app: hotkey, pick a region or window, annotate, copy.
+A small native Mac screenshot app. Run it and the screen freezes: click a window or drag a region, draw on it,
+copy it. Then it quits. No hotkey, no menu bar item; whatever launches it is the trigger.
 
-Nothing is built yet. See [PLAN.md](PLAN.md).
+![The overlay mid-edit](docs/demo.png)
+
+## Use
+
+```
+just install      # build, sign, copy to /Applications
+open -a IgSnap
+```
+
+The first run asks for Screen Recording permission (System Settings → Privacy & Security). Grant it and run again.
+
+| | |
+| --- | --- |
+| Hover, click | Take the window under the pointer |
+| Drag | Take a region. Handles adjust it; dragging outside starts over |
+| `A` `R` `E` `T` | Arrow, rectangle, ellipse, text |
+| ⌘Z | Undo |
+| Return or ⌘C | Copy and quit |
+| Esc | Quit |
+
+## Develop
+
+```
+just test         # core tests: geometry, hit-testing, rendering
+just demo         # draw the overlay to build/demo.png, off screen, no permission needed
+just run          # build and take a screenshot
+```
+
+Needs macOS 27 and the Xcode toolchain. Design notes and what is left: [PLAN.md](PLAN.md).
