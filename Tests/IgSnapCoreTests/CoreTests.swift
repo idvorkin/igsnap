@@ -44,11 +44,14 @@ private func isRed(_ p: [UInt8]) -> Bool { p[0] > 200 && p[1] < 100 && p[2] < 10
 }
 
 @Test func aDragInAnyDirectionGivesAPositiveRect() {
-    #expect(spanning(from: CGPoint(x: 50, y: 60), to: CGPoint(x: 10, y: 20)) == CGRect(x: 10, y: 20, width: 40, height: 40))
+    #expect(
+        spanning(from: CGPoint(x: 50, y: 60), to: CGPoint(x: 10, y: 20)) == CGRect(x: 10, y: 20, width: 40, height: 40))
 }
 
 @Test func pixelRectsLandOnWholePixels() {
-    #expect(pixelRect(CGRect(x: 10.25, y: 10, width: 50, height: 50.5), scale: 2) == CGRect(x: 21, y: 20, width: 100, height: 101))
+    #expect(
+        pixelRect(CGRect(x: 10.25, y: 10, width: 50, height: 50.5), scale: 2)
+            == CGRect(x: 21, y: 20, width: 100, height: 101))
 }
 
 @Test func handlesAreFoundAndResizeTheirEdges() {
@@ -64,8 +67,12 @@ private func isRed(_ p: [UInt8]) -> Bool { p[0] > 200 && p[1] < 100 && p[2] < 10
 @Test func theToolbarGoesBelowThenAboveThenInside() {
     let bounds = CGRect(x: 0, y: 0, width: 1000, height: 800)
     let size = CGSize(width: 300, height: 40)
-    #expect(toolbarOrigin(selection: CGRect(x: 100, y: 100, width: 500, height: 300), size: size, in: bounds) == CGPoint(x: 300, y: 408))
-    #expect(toolbarOrigin(selection: CGRect(x: 100, y: 400, width: 500, height: 400), size: size, in: bounds) == CGPoint(x: 300, y: 352))
+    #expect(
+        toolbarOrigin(selection: CGRect(x: 100, y: 100, width: 500, height: 300), size: size, in: bounds)
+            == CGPoint(x: 300, y: 408))
+    #expect(
+        toolbarOrigin(selection: CGRect(x: 100, y: 400, width: 500, height: 400), size: size, in: bounds)
+            == CGPoint(x: 300, y: 352))
     #expect(toolbarOrigin(selection: bounds, size: size, in: bounds) == CGPoint(x: 692, y: 752))
     // A narrow selection at the left edge: the toolbar stays on screen.
     #expect(toolbarOrigin(selection: CGRect(x: 0, y: 100, width: 50, height: 50), size: size, in: bounds).x == 8)
@@ -73,10 +80,12 @@ private func isRed(_ p: [UInt8]) -> Bool { p[0] > 200 && p[1] < 100 && p[2] < 10
 
 @Test func theCropIsFullResolutionAndTheRightWayUp() throws {
     let image = fixture()  // a 100×100 pt display at 2×
-    let top = try #require(render(image: image, selection: CGRect(x: 10, y: 10, width: 30, height: 20), scale: 2, annotations: []))
+    let top = try #require(
+        render(image: image, selection: CGRect(x: 10, y: 10, width: 30, height: 20), scale: 2, annotations: []))
     #expect(top.width == 60 && top.height == 40)
     #expect(pixel(top, 5, 5) == [0, 0, 0])
-    let bottom = try #require(render(image: image, selection: CGRect(x: 10, y: 60, width: 30, height: 20), scale: 2, annotations: []))
+    let bottom = try #require(
+        render(image: image, selection: CGRect(x: 10, y: 60, width: 30, height: 20), scale: 2, annotations: []))
     #expect(pixel(bottom, 5, 5) == [255, 255, 255])
 }
 
@@ -109,5 +118,7 @@ private func isRed(_ p: [UInt8]) -> Bool { p[0] > 200 && p[1] < 100 && p[2] < 10
 }
 
 @Test func anEmptySelectionRendersNothing() {
-    #expect(render(image: fixture(), selection: CGRect(x: 500, y: 500, width: 10, height: 10), scale: 2, annotations: []) == nil)
+    #expect(
+        render(image: fixture(), selection: CGRect(x: 500, y: 500, width: 10, height: 10), scale: 2, annotations: [])
+            == nil)
 }

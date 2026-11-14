@@ -8,7 +8,8 @@ func renderDemo(to path: String) {
     let windowRect = CGRect(x: 180, y: 110, width: 640, height: 400)
 
     let ctx = CGContext(
-        data: nil, width: Int(size.width * scale), height: Int(size.height * scale), bitsPerComponent: 8, bytesPerRow: 0,
+        data: nil, width: Int(size.width * scale), height: Int(size.height * scale), bitsPerComponent: 8,
+        bytesPerRow: 0,
         space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
     ctx.translateBy(x: 0, y: size.height * scale)
     ctx.scaleBy(x: scale, y: -scale)
@@ -20,7 +21,8 @@ func renderDemo(to path: String) {
     ctx.fill(CGRect(x: windowRect.minX, y: windowRect.minY, width: windowRect.width, height: 28))
     IgSnapCore.draw(Annotation(.text("A window", at: CGPoint(x: 200, y: 160)), color: .black, fontSize: 24), in: ctx)
 
-    let view = OverlayView(frame: CGRect(origin: .zero, size: size), image: ctx.makeImage()!, scale: scale, windows: [windowRect])
+    let view = OverlayView(
+        frame: CGRect(origin: .zero, size: size), image: ctx.makeImage()!, scale: scale, windows: [windowRect])
     view.select(windowRect)
     view.add(Annotation(.arrow(from: CGPoint(x: 560, y: 380), to: CGPoint(x: 340, y: 200))))
     view.add(Annotation(.rectangle(CGRect(x: 190, y: 150, width: 150, height: 44))))

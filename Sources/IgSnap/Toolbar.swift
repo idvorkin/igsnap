@@ -80,7 +80,8 @@ final class Toolbar: NSView {
         stack.edgeInsets = NSEdgeInsets(top: 5, left: 8, bottom: 5, right: 8)
 
         for tool in Tool.allCases {
-            let button = ActionButton(symbol: tool.symbol, tip: "\(tool.name) (\(tool.key.uppercased()))") { [weak self] in
+            let button = ActionButton(symbol: tool.symbol, tip: "\(tool.name) (\(tool.key.uppercased()))") {
+                [weak self] in
                 self?.onTool(tool)
             }
             toolButtons.append((tool, button))
@@ -93,8 +94,10 @@ final class Toolbar: NSView {
             stack.addArrangedSubview(button)
         }
         stack.addArrangedSubview(divider())
-        stack.addArrangedSubview(tinted(ActionButton(symbol: "arrow.uturn.backward", tip: "Undo (⌘Z)") { [weak self] in self?.onUndo() }))
-        stack.addArrangedSubview(tinted(ActionButton(symbol: "xmark", tip: "Cancel (Esc)") { [weak self] in self?.onCancel() }))
+        stack.addArrangedSubview(
+            tinted(ActionButton(symbol: "arrow.uturn.backward", tip: "Undo (⌘Z)") { [weak self] in self?.onUndo() }))
+        stack.addArrangedSubview(
+            tinted(ActionButton(symbol: "xmark", tip: "Cancel (Esc)") { [weak self] in self?.onCancel() }))
 
         let copy = ActionButton(title: "Copy", target: nil, action: nil)
         copy.setUp { [weak self] in self?.onCopy() }
@@ -106,13 +109,17 @@ final class Toolbar: NSView {
         addSubview(stack)
         stack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor), stack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
             stack.topAnchor.constraint(equalTo: topAnchor), stack.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
         setFrameSize(stack.fittingSize)
     }
 
     required init?(coder: NSCoder) { fatalError("not used") }
+
+    // A click on the padding stays here instead of drawing on the screenshot underneath.
+    override func mouseDown(with event: NSEvent) {}
 
     func update(tool: Tool, color: RGBA) {
         for (t, button) in toolButtons { button.contentTintColor = t == tool ? .controlAccentColor : .white }

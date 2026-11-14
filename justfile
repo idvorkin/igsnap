@@ -6,7 +6,18 @@ default:
 
 # Host tests for IgSnapCore: geometry, hit-testing, rendering.
 test:
+    #!/usr/bin/env bash
+    # pipefail: a failing suite must fail the recipe instead of hiding behind grep's exit 0.
+    set -uo pipefail
     swift test 2>&1 | grep -E "error|✘|Test run"
+
+# The overlay's real mouse and key handlers, driven by made-up events in a window that is never shown.
+selftest:
+    swift run -q IgSnap --self-test
+
+# Format every Swift file in place to the house style (.swift-format).
+fmt:
+    swift format format -i -r Sources Tests Package.swift
 
 # Draw the overlay mid-edit to a PNG, off screen: a look at the UI with no permission and no window.
 demo out="build/demo.png":

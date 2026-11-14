@@ -4,7 +4,9 @@ import Foundation
 
 public struct RGBA: Equatable, Sendable {
     public var r, g, b, a: CGFloat
-    public init(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ a: CGFloat = 1) { (self.r, self.g, self.b, self.a) = (r, g, b, a) }
+    public init(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ a: CGFloat = 1) {
+        (self.r, self.g, self.b, self.a) = (r, g, b, a)
+    }
     public var cgColor: CGColor { CGColor(srgbRed: r, green: g, blue: b, alpha: a) }
 
     public static let red = RGBA(1, 0.23, 0.19)
@@ -36,7 +38,8 @@ public struct Annotation: Equatable, Sendable {
 
 /// The font for text annotations: the bold system font, so the editing field and the drawn text match.
 public func annotationFont(size: CGFloat) -> CTFont {
-    CTFontCreateUIFontForLanguage(.emphasizedSystem, size, nil) ?? CTFontCreateWithName("Helvetica-Bold" as CFString, size, nil)
+    CTFontCreateUIFontForLanguage(.emphasizedSystem, size, nil)
+        ?? CTFontCreateWithName("Helvetica-Bold" as CFString, size, nil)
 }
 
 /// Draws into a context whose y axis points down (a flipped view, or `render` below).

@@ -56,7 +56,10 @@ final class OverlayView: NSView, NSTextFieldDelegate {
 
     override func updateTrackingAreas() {
         trackingAreas.forEach(removeTrackingArea)
-        addTrackingArea(NSTrackingArea(rect: .zero, options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self))
+        addTrackingArea(
+            NSTrackingArea(
+                rect: .zero, options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self)
+        )
     }
 
     // MARK: State changes
@@ -93,7 +96,9 @@ final class OverlayView: NSView, NSTextFieldDelegate {
 
     private func copyOut() {
         commitText()
-        guard let selection, let out = render(image: image, selection: selection, scale: scale, annotations: annotations) else { return }
+        guard let selection,
+            let out = render(image: image, selection: selection, scale: scale, annotations: annotations)
+        else { return }
         onCopy(out, scale)
     }
 
@@ -122,6 +127,17 @@ final class OverlayView: NSView, NSTextFieldDelegate {
         hover = windowUnder(location(event), windows: windows)?.intersection(bounds)
         needsDisplay = true
     }
+
+    /// Highlight the window under a pointer that hasn't moved yet (a keyboard launch).
+    func seedHover() {
+        guard let window, selection == nil else { return }
+        let p = convert(window.mouseLocationOutsideOfEventStream, from: nil)
+        if bounds.contains(p) { hover = windowUnder(p, windows: windows)?.intersection(bounds) }
+        needsDisplay = true
+    }
+
+    /// The way out that needs no keyboard: the overlay covers every display above everything else.
+    override func rightMouseDown(with event: NSEvent) { onCancel() }
 
     override func mouseExited(with event: NSEvent) {
         hover = nil
@@ -200,7 +216,8 @@ final class OverlayView: NSView, NSTextFieldDelegate {
     private func beginText(at p: CGPoint) {
         guard let selection else { return }
         let size: CGFloat = 18
-        let field = NSTextField(frame: CGRect(x: p.x, y: p.y - size * 0.6, width: max(selection.maxX - p.x, 40), height: size * 1.4))
+        let field = NSTextField(
+            frame: CGRect(x: p.x, y: p.y - size * 0.6, width: max(selection.maxX - p.x, 40), height: size * 1.4))
         field.isBordered = false
         field.drawsBackground = false
         field.focusRingType = .none

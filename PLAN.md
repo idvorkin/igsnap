@@ -8,7 +8,7 @@ run it, pick a region or a window, draw on it, copy it.
 | Option | What it already does | The gap |
 | --- | --- | --- |
 | Built-in ⌘⇧4 | Region drag, Space to pick a window, ⌃ to copy directly | Annotating means catching the floating thumbnail, opening Markup, then copying from there. |
-| Flameshot | Annotate in place | Qt app, not notarized: its README says to clear quarantine by hand on macOS 15+. No window snap. |
+| Flameshot | Annotate in place | Qt app, not notarized: its README says to clear quarantine by hand on macOS 15+. |
 | Shottr, CleanShot X | Likely all of it (from memory, not checked) | Closed source; CleanShot is paid. |
 
 The gap is narrow: annotate in place and copy with one key, with window snap, in something Igor owns.
@@ -52,6 +52,8 @@ Built: region select, window snap, the four tools, colours, undo, copy.
 
 Checked by `just test`: coordinate conversion, hit-testing, handle resizing, toolbar placement, and that the
 crop is full resolution, the right way up, with annotations where they were drawn.
+Checked by `just selftest`: the overlay's real mouse and key handlers, fed made-up events in a window that is never
+shown: window snap, region drag, handle resize, each tool, text entry, undo, copy size, Esc and right-click.
 Checked by eye from `just demo`: the overlay, selection, annotations and toolbar.
 
 **Not yet checked on a real screen**, because it needs the Screen Recording grant and hands:
@@ -59,7 +61,7 @@ Checked by eye from `just demo`: the overlay, selection, annotations and toolbar
 - [ ] The capture itself, and that the grant survives a rebuild
 - [ ] Paste into Preview: pixel size = points × display scale
 - [ ] Window snap picks a half-covered window's frame
-- [ ] Keys reach the overlay (Esc, Return, typing text)
+- [ ] Keys reach the live overlay (Esc, Return, typing text). Right-click quits if they don't.
 - [ ] The external display, and over a full-screen app
 - [ ] Whether macOS 27 re-prompts periodically for Screen Recording
 - [ ] Launched from Alfred: is Alfred's own window gone before the capture?

@@ -26,7 +26,9 @@ func captureDisplays() async throws -> [Shot] {
     let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
     var shots: [Shot] = []
     for screen in NSScreen.screens {
-        guard let id = displayID(screen), let display = content.displays.first(where: { $0.displayID == id }) else { continue }
+        guard let id = displayID(screen), let display = content.displays.first(where: { $0.displayID == id }) else {
+            continue
+        }
         let filter = SCContentFilter(display: display, excludingWindows: [])
         let config = SCStreamConfiguration()
         config.width = Int(filter.contentRect.width * CGFloat(filter.pointPixelScale))
@@ -40,7 +42,9 @@ func captureDisplays() async throws -> [Shot] {
 
 /// Ordinary app windows, front to back, in global top-left coordinates. Bounds need no permission.
 func windowRects() -> [CGRect] {
-    let info = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
+    let info =
+        CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]]
+        ?? []
     let me = getpid()
     return info.compactMap { window in
         guard window[kCGWindowLayer as String] as? Int == 0,
@@ -80,7 +84,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Task { @MainActor in
             do {
                 let shots = try await captureDisplays()
-                if shots.isEmpty { fail("No display to capture", "ScreenCaptureKit returned no displays.") } else { show(shots, rects) }
+                if shots.isEmpty {
+                    fail("No display to capture", "ScreenCaptureKit returned no displays.")
+                } else {
+                    show(shots, rects)
+                }
             } catch {
                 fail("The capture failed", error.localizedDescription)
             }
@@ -114,13 +122,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             windows.append(window)
         }
         for view in views {
-            view.onBegin = { [weak view] in views.filter { $0 !== view }.forEach { $0.reset() } }
+            view.onBegin = { [weak view] in
+                for other in views where other !== view { other.reset() }
+            }
         }
         NSApp.activate(ignoringOtherApps: true)
         // Keys go to the display the pointer is on.
         let pointed = windows.first { $0.frame.contains(NSEvent.mouseLocation) } ?? windows.first
         pointed?.makeKeyAndOrderFront(nil)
         pointed?.makeFirstResponder(pointed?.contentView)
+        (pointed?.contentView as? OverlayView)?.seedHover()
     }
 
     private func fail(_ title: String, _ detail: String, settings: Bool = false) {
@@ -146,6 +157,7 @@ if let i = CommandLine.arguments.firstIndex(of: "--render-demo"), CommandLine.ar
     renderDemo(to: CommandLine.arguments[i + 1])
     exit(0)
 }
+if CommandLine.arguments.contains("--self-test") { exit(selfTest() ? 0 : 1) }
 
 let delegate = AppDelegate()
 app.delegate = delegate

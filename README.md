@@ -21,12 +21,13 @@ The first run asks for Screen Recording permission (System Settings → Privacy 
 | `A` `R` `E` `T` | Arrow, rectangle, ellipse, text |
 | ⌘Z | Undo |
 | Return or ⌘C | Copy and quit |
-| Esc | Quit |
+| Esc or right-click | Quit |
 
 ## Develop
 
 ```
 just test         # core tests: geometry, hit-testing, rendering
+just selftest     # the overlay's mouse and key handlers, driven headless
 just demo         # draw the overlay to build/demo.png, off screen, no permission needed
 just run          # build and take a screenshot
 ```
