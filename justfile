@@ -19,11 +19,10 @@ selftest:
 fmt:
     swift format format -i -r Sources Tests Package.swift
 
-# Draw the overlay mid-edit to a PNG, off screen: a look at the UI with no permission and no window.
-demo out="build/demo.png":
-    mkdir -p build
+# Redraw the README pictures (pick, annotate, result), off screen: no permission and no window.
+demo out="docs":
+    mkdir -p "{{out}}"
     swift run -q IgSnap --render-demo "{{out}}"
-    @echo "{{out}}"
 
 # Build a release binary and wrap it into a signed app bundle.
 app:

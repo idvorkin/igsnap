@@ -123,8 +123,13 @@ final class OverlayView: NSView, NSTextFieldDelegate {
     }
 
     override func mouseMoved(with event: NSEvent) {
+        hover(at: location(event))
+    }
+
+    /// Highlight the window under the point, while nothing is selected yet.
+    func hover(at p: CGPoint) {
         guard selection == nil else { return }
-        hover = windowUnder(location(event), windows: windows)?.intersection(bounds)
+        hover = windowUnder(p, windows: windows)?.intersection(bounds)
         needsDisplay = true
     }
 
