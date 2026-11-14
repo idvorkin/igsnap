@@ -58,7 +58,9 @@ final class OverlayView: NSView, NSTextFieldDelegate {
         trackingAreas.forEach(removeTrackingArea)
         addTrackingArea(
             NSTrackingArea(
-                rect: .zero, options: [.mouseMoved, .mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self)
+                rect: .zero,
+                options: [.mouseMoved, .mouseEnteredAndExited, .cursorUpdate, .activeAlways, .inVisibleRect],
+                owner: self)
         )
     }
 
@@ -124,6 +126,31 @@ final class OverlayView: NSView, NSTextFieldDelegate {
 
     override func mouseMoved(with event: NSEvent) {
         hover(at: location(event))
+        cursor(at: location(event)).set()
+    }
+
+    override func cursorUpdate(with event: NSEvent) { cursor(at: location(event)).set() }
+
+    /// The pointer says what a click will do: a crosshair wherever it selects or draws (so the frozen screen
+    /// doesn't pass for the live one), resize arrows on the handles, an I-beam for text, an arrow on the toolbar.
+    func cursor(at p: CGPoint) -> NSCursor {
+        if !toolbar.isHidden, toolbar.frame.contains(p) { return .arrow }
+        guard let selection else { return .crosshair }
+        if let h = handle(at: p, in: selection, tolerance: 8) {
+            let position: NSCursor.FrameResizePosition =
+                switch h {
+                case .topLeft: .topLeft
+                case .top: .top
+                case .topRight: .topRight
+                case .right: .right
+                case .bottomRight: .bottomRight
+                case .bottom: .bottom
+                case .bottomLeft: .bottomLeft
+                case .left: .left
+                }
+            return .frameResize(position: position, directions: .all)
+        }
+        return selection.contains(p) && tool == .text ? .iBeam : .crosshair
     }
 
     /// Highlight the window under the point, while nothing is selected yet.
@@ -137,7 +164,10 @@ final class OverlayView: NSView, NSTextFieldDelegate {
     func seedHover() {
         guard let window, selection == nil else { return }
         let p = convert(window.mouseLocationOutsideOfEventStream, from: nil)
-        if bounds.contains(p) { hover = windowUnder(p, windows: windows)?.intersection(bounds) }
+        if bounds.contains(p) {
+            hover = windowUnder(p, windows: windows)?.intersection(bounds)
+            cursor(at: p).set()
+        }
         needsDisplay = true
     }
 
@@ -200,6 +230,7 @@ final class OverlayView: NSView, NSTextFieldDelegate {
         if let draft { annotations.append(draft) }
         (draft, drag) = (nil, nil)
         refresh()
+        cursor(at: location(event)).set()
     }
 
     // MARK: Keys
@@ -262,6 +293,19 @@ final class OverlayView: NSView, NSTextFieldDelegate {
 
     // MARK: Drawing
 
+    /// While nothing is selected: a line at the top of the display saying this is a capture and how to leave it.
+    private func drawHint() {
+        let text = NSAttributedString(
+            string: "Click a window or drag a region  ·  Esc or right-click to cancel",
+            attributes: [.font: NSFont.systemFont(ofSize: 14, weight: .medium), .foregroundColor: NSColor.white])
+        let size = text.size()
+        let pill = CGRect(
+            x: (bounds.width - size.width) / 2 - 14, y: 56, width: size.width + 28, height: size.height + 14)
+        NSColor(white: 0.1, alpha: 0.85).setFill()
+        NSBezierPath(roundedRect: pill, xRadius: pill.height / 2, yRadius: pill.height / 2).fill()
+        text.draw(at: CGPoint(x: pill.minX + 14, y: pill.minY + 7))
+    }
+
     override func draw(_ dirtyRect: NSRect) {
         guard let ctx = NSGraphicsContext.current?.cgContext else { return }
         // ponytail: the whole display image is redrawn on every mouse move. Fine on Apple silicon at 5K; if it
@@ -281,6 +325,7 @@ final class OverlayView: NSView, NSTextFieldDelegate {
         ctx.fillPath(using: .evenOdd)
 
         guard let selection else {
+            drawHint()
             if let hover {
                 ctx.setStrokeColor(NSColor.controlAccentColor.cgColor)
                 ctx.setLineWidth(3)

@@ -71,6 +71,10 @@ func selfTest() -> Bool {
     view.mouseUp(with: mouse(.leftMouseUp, 750, 550, in: window))
     check(view.selection == nil, "a click on no window selects nothing")
 
+    check(
+        view.cursor(at: CGPoint(x: 300, y: 300)) == .crosshair, "the pointer is a crosshair before anything is selected"
+    )
+
     print("region")
     (view, window) = makeView()
     drag(view, window, from: CGPoint(x: 600, y: 500), to: CGPoint(x: 200, y: 100))
@@ -122,6 +126,20 @@ func selfTest() -> Bool {
     view.keyDown(with: key("z", command: true, in: window))
     check(view.subviews.compactMap { $0 as? NSTextField }.isEmpty, "⌘Z drops an open text field")
     check(window.firstResponder === view, "and the keyboard is back on the overlay")
+
+    print("pointer")
+    if let selection = view.selection {
+        let inside = CGPoint(x: selection.midX, y: selection.midY)
+        view.keyDown(with: key("a", in: window))
+        check(view.cursor(at: inside) == .crosshair, "a crosshair inside the selection with a drawing tool")
+        check(view.cursor(at: CGPoint(x: selection.maxX, y: selection.maxY)) != .crosshair, "resize arrows on a handle")
+        view.keyDown(with: key("t", in: window))
+        check(view.cursor(at: inside) == .iBeam, "an I-beam with the text tool")
+        view.keyDown(with: key("a", in: window))
+    }
+    if let bar = view.subviews.compactMap({ $0 as? Toolbar }).first {
+        check(view.cursor(at: CGPoint(x: bar.frame.midX, y: bar.frame.midY)) == .arrow, "an arrow over the toolbar")
+    }
 
     print("toolbar")
     let toolbar = view.subviews.compactMap { $0 as? Toolbar }.first
