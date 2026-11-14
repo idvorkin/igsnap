@@ -20,18 +20,23 @@ public struct RGBA: Equatable, Sendable {
 public enum Shape: Equatable, Sendable {
     case arrow(from: CGPoint, to: CGPoint)
     case rectangle(CGRect)
+    /// A solid black box, for hiding what is under it. Ignores the colour.
+    case blackout(CGRect)
     case ellipse(CGRect)
     /// `at` is the top-left of the line of text.
     case text(String, at: CGPoint)
 }
 
 public struct Annotation: Equatable, Sendable {
+    /// Arrows are drawn heavier than outlines: they have to be seen from across the screenshot.
+    public static let arrowWidth: CGFloat = 8
+
     public var shape: Shape
     public var color: RGBA
     public var lineWidth: CGFloat
     public var fontSize: CGFloat
 
-    public init(_ shape: Shape, color: RGBA = .red, lineWidth: CGFloat = 3, fontSize: CGFloat = 18) {
+    public init(_ shape: Shape, color: RGBA = .red, lineWidth: CGFloat = 5, fontSize: CGFloat = 18) {
         (self.shape, self.color, self.lineWidth, self.fontSize) = (shape, color, lineWidth, fontSize)
     }
 }
@@ -54,6 +59,9 @@ public func draw(_ annotation: Annotation, in ctx: CGContext) {
     ctx.setLineJoin(.round)
 
     switch annotation.shape {
+    case .blackout(let rect):
+        ctx.setFillColor(RGBA.black.cgColor)
+        ctx.fill(rect)
     case .rectangle(let rect):
         ctx.stroke(rect)
     case .ellipse(let rect):
@@ -63,7 +71,7 @@ public func draw(_ annotation: Annotation, in ctx: CGContext) {
         let length = (dx * dx + dy * dy).squareRoot()
         guard length > 0 else { return }
         let ux = dx / length, uy = dy / length
-        let head = min(max(12, annotation.lineWidth * 5), length)
+        let head = min(max(14, annotation.lineWidth * 3.5), length)
         let half = head * 0.45
         // The shaft stops inside the head so its round cap doesn't blunt the tip.
         let base = CGPoint(x: to.x - ux * head, y: to.y - uy * head)

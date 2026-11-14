@@ -18,7 +18,8 @@ The gap is narrow: annotate in place and copy with one key, with window snap, in
 - **Run-and-quit.** No hotkey, no menu bar item. Launching the app is the trigger, so Alfred or `y sss` can call it.
 - **Window snap** means hover highlights the window under the pointer and a click takes its frame.
 - **Annotate in place** on the frozen screen, not in a separate editor window.
-- **Tools:** arrow, rectangle, ellipse, text. Five colours. Undo.
+- **Tools:** arrow, rectangle, ellipse, black-out box, text. Five colours, red by default. Undo.
+  Lines are 5 pt and arrows 8 pt: thin ones got lost on a real screenshot.
 - **macOS 27 only.**
 
 ## Design

@@ -122,3 +122,11 @@ private func isRed(_ p: [UInt8]) -> Bool { p[0] > 200 && p[1] < 100 && p[2] < 10
         render(image: fixture(), selection: CGRect(x: 500, y: 500, width: 10, height: 10), scale: 2, annotations: [])
             == nil)
 }
+
+@Test func aBlackoutBoxIsSolidBlackWhateverTheColour() throws {
+    let selection = CGRect(x: 50, y: 50, width: 50, height: 50)
+    let box = Annotation(.blackout(CGRect(x: 60, y: 60, width: 20, height: 20)), color: .red)
+    let out = try #require(render(image: fixture(), selection: selection, scale: 2, annotations: [box]))
+    #expect(pixel(out, 40, 40) == [0, 0, 0])  // the middle is filled
+    #expect(pixel(out, 80, 80) == [255, 255, 255])  // outside is untouched
+}

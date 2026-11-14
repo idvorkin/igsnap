@@ -18,7 +18,7 @@ The first run asks for Screen Recording permission (System Settings → Privacy 
 | --- | --- |
 | Hover, click | Take the window under the pointer |
 | Drag | Take a region. Handles adjust it; dragging outside starts over |
-| `A` `R` `E` `T` | Arrow, rectangle, ellipse, text |
+| `A` `R` `E` `B` `T` | Arrow, rectangle, ellipse, black-out box, text |
 | ⌘Z | Undo |
 | Return or ⌘C | Copy and quit |
 | Esc or right-click | Quit |

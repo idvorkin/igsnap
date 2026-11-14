@@ -2,12 +2,13 @@ import AppKit
 import IgSnapCore
 
 enum Tool: CaseIterable {
-    case arrow, rectangle, ellipse, text
+    case arrow, rectangle, ellipse, blackout, text
 
     var symbol: String {
         switch self {
         case .arrow: "arrow.up.right"
         case .rectangle: "rectangle"
+        case .blackout: "rectangle.fill"
         case .ellipse: "oval"
         case .text: "textformat"
         }
@@ -16,6 +17,7 @@ enum Tool: CaseIterable {
         switch self {
         case .arrow: "a"
         case .rectangle: "r"
+        case .blackout: "b"
         case .ellipse: "e"
         case .text: "t"
         }
@@ -24,6 +26,7 @@ enum Tool: CaseIterable {
         switch self {
         case .arrow: "Arrow"
         case .rectangle: "Rectangle"
+        case .blackout: "Black out"
         case .ellipse: "Ellipse"
         case .text: "Text"
         }

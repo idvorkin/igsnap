@@ -94,6 +94,12 @@ func selfTest() -> Bool {
     drag(view, window, from: CGPoint(x: 300, y: 200), to: CGPoint(x: 400, y: 300))
     check(
         view.annotations.last?.shape == .ellipse(CGRect(x: 300, y: 200, width: 100, height: 100)), "E draws an ellipse")
+    view.keyDown(with: key("b", in: window))
+    drag(view, window, from: CGPoint(x: 300, y: 200), to: CGPoint(x: 400, y: 300))
+    check(
+        view.annotations.last?.shape == .blackout(CGRect(x: 300, y: 200, width: 100, height: 100)), "B blacks out a box"
+    )
+    view.keyDown(with: key("z", command: true, in: window))
     check(view.annotations.count == 3, "three annotations")
     view.keyDown(with: key("z", command: true, in: window))
     check(view.annotations.count == 2, "⌘Z removes the last")

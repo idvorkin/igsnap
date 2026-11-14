@@ -179,10 +179,11 @@ final class OverlayView: NSView, NSTextFieldDelegate {
                 switch tool {
                 case .arrow: .arrow(from: from, to: p)
                 case .rectangle: .rectangle(spanning(from: from, to: p))
+                case .blackout: .blackout(spanning(from: from, to: p))
                 case .ellipse: .ellipse(spanning(from: from, to: p))
                 case .text: .text("", at: from)
                 }
-            draft = Annotation(shape, color: color)
+            draft = Annotation(shape, color: color, lineWidth: tool == .arrow ? Annotation.arrowWidth : 5)
         case nil: break
         }
         refresh()

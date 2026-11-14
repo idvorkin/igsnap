@@ -24,7 +24,10 @@ func renderDemo(to path: String) {
     let view = OverlayView(
         frame: CGRect(origin: .zero, size: size), image: ctx.makeImage()!, scale: scale, windows: [windowRect])
     view.select(windowRect)
-    view.add(Annotation(.arrow(from: CGPoint(x: 560, y: 380), to: CGPoint(x: 340, y: 200))))
+    view.add(
+        Annotation(.arrow(from: CGPoint(x: 560, y: 380), to: CGPoint(x: 340, y: 200)), lineWidth: Annotation.arrowWidth)
+    )
+    view.add(Annotation(.blackout(CGRect(x: 220, y: 420, width: 220, height: 36))))
     view.add(Annotation(.rectangle(CGRect(x: 190, y: 150, width: 150, height: 44))))
     view.add(Annotation(.ellipse(CGRect(x: 600, y: 200, width: 160, height: 100)), color: .blue))
     view.add(Annotation(.text("look here", at: CGPoint(x: 570, y: 372)), color: .red))
