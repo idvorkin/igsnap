@@ -1,6 +1,9 @@
 app := "build/IgSnap.app"
 installed := "/Applications/IgSnap.app"
 
+# Shared entry points across Igor's native repos: just build, test, install, run.
+alias build := app
+
 default:
     @just --list
 
